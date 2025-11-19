@@ -120,12 +120,18 @@ const App: React.FC = () => {
 
     const sourceListId = draggedItem.listId!;
     
-    // Safety check
-    if (!board.lists[sourceListId]) return;
+    // Safety checks to prevent runtime errors
+    if (!board.lists[sourceListId] || !board.lists[targetListId]) return;
 
     const cardId = board.lists[sourceListId].cardIds[draggedItem.index];
-
     if (!cardId) return;
+
+    // Optimization: If dropping on the same spot, do nothing
+    const currentIds = board.lists[targetListId].cardIds;
+    if (sourceListId === targetListId) {
+        // If index is same or just shifted by 1 due to self, ignore
+        if (dropIndex === draggedItem.index || dropIndex === draggedItem.index + 1) return;
+    }
 
     // Deep copy board
     const newBoard = { ...board, lists: { ...board.lists } };
@@ -136,11 +142,21 @@ const App: React.FC = () => {
     newBoard.lists[sourceListId] = { ...newBoard.lists[sourceListId], cardIds: sourceCardIds };
 
     // Add to destination
-    const destCardIds = Array.from(newBoard.lists[targetListId].cardIds);
+    // Recalculate destCardIds in case source was same as dest (handled by deep copy reference, but safe to re-read from board if needed, but here we use local vars)
+    // Note: if source === dest, we must use the modified array 'sourceCardIds' as the base for insertion to be correct
+    let destCardIds = sourceListId === targetListId ? sourceCardIds : Array.from(newBoard.lists[targetListId].cardIds);
     
     // If dropIndex is undefined, append to end
-    const finalIndex = dropIndex !== undefined ? dropIndex : destCardIds.length;
+    // Ensure index doesn't exceed bounds
+    let finalIndex = dropIndex !== undefined ? dropIndex : destCardIds.length;
     
+    // Adjustment if moving down in same list: logic was handled by splice removal, 
+    // but if dropIndex > dragIndex in same list, we might need to shift -1 because removal shifted indices.
+    // However, since we removed first, the indices shift up. 
+    if (sourceListId === targetListId && dropIndex !== undefined && draggedItem.index < dropIndex) {
+        finalIndex -= 1;
+    }
+
     destCardIds.splice(finalIndex, 0, cardId);
     newBoard.lists[targetListId] = { ...newBoard.lists[targetListId], cardIds: destCardIds };
     

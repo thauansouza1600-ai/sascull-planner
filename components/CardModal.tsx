@@ -22,17 +22,12 @@ const CardModal: React.FC<CardModalProps> = ({ card, currentUser, isOpen, onClos
   const [isGeneratingChecklist, setIsGeneratingChecklist] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
-  // Sync local state when card data changes (e.g. external updates or self updates)
+  // Consolidado: Reseta o estado local apenas quando abre um novo cartão ou reabre o modal.
+  // Isso corrige o bug onde editar um checklist resetava o texto da descrição que estava sendo digitado.
   useEffect(() => {
     if (isOpen) {
       setDescription(card.description);
       setTitle(card.title);
-    }
-  }, [card.description, card.title, isOpen]);
-
-  // Reset ephemeral state only when opening a new card or reopening modal
-  useEffect(() => {
-    if (isOpen) {
       setNewComment("");
       setPreviewImage(null);
     }
@@ -117,7 +112,10 @@ const CardModal: React.FC<CardModalProps> = ({ card, currentUser, isOpen, onClos
     <>
         {/* Lightbox Preview Overlay */}
         {previewImage && (
-            <div className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setPreviewImage(null)}>
+            <div 
+                className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-200" 
+                onClick={() => setPreviewImage(null)}
+            >
                 <button className="absolute top-4 right-4 text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition-colors">
                     <XIcon className="w-8 h-8" />
                 </button>
