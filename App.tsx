@@ -117,6 +117,10 @@ const App: React.FC = () => {
     if (!draggedItem || draggedItem.type !== 'CARD') return;
 
     const sourceListId = draggedItem.listId!;
+    
+    // Safety check
+    if (!board.lists[sourceListId]) return;
+
     const cardId = board.lists[sourceListId].cardIds[draggedItem.index];
 
     if (!cardId) return;

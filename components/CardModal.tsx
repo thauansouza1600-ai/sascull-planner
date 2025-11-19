@@ -22,14 +22,21 @@ const CardModal: React.FC<CardModalProps> = ({ card, currentUser, isOpen, onClos
   const [isGeneratingChecklist, setIsGeneratingChecklist] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  // Sync local state when card data changes (e.g. external updates or self updates)
   useEffect(() => {
     if (isOpen) {
       setDescription(card.description);
       setTitle(card.title);
+    }
+  }, [card.description, card.title, isOpen]);
+
+  // Reset ephemeral state only when opening a new card or reopening modal
+  useEffect(() => {
+    if (isOpen) {
       setNewComment("");
       setPreviewImage(null);
     }
-  }, [isOpen, card]);
+  }, [card.id, isOpen]);
 
   if (!isOpen) return null;
 
@@ -123,8 +130,14 @@ const CardModal: React.FC<CardModalProps> = ({ card, currentUser, isOpen, onClos
             </div>
         )}
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-        <div className="bg-zinc-900 w-full max-w-4xl rounded-lg shadow-2xl shadow-black border border-zinc-800 overflow-hidden flex flex-col max-h-[95vh] text-gray-200">
+        <div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={onClose}
+        >
+        <div 
+            className="bg-zinc-900 w-full max-w-4xl rounded-lg shadow-2xl shadow-black border border-zinc-800 overflow-hidden flex flex-col max-h-[95vh] text-gray-200"
+            onClick={(e) => e.stopPropagation()}
+        >
             
             {/* Modal Header */}
             <div className="pt-5 px-6 pb-2 flex justify-between items-start relative">
