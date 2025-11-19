@@ -33,7 +33,9 @@ const INITIAL_DATA: Board = {
       members: [MOCK_USERS[0]], 
       comments: [], 
       checklist: [], 
-      attachments: [],
+      attachments: [
+          {id: 'att-img-demo', name: 'Concorrentes.png', type: 'image', url: 'https://picsum.photos/seed/competitors/800/400', createdAt: '2023-10-05T14:00:00Z'}
+      ],
       activity: [{id: 'a1', userId: 'u2', text: 'moveu este cartão do Backlog', createdAt: '2023-10-01T10:00:00Z', type: 'action'}],
       dueDate: '2023-11-25'
     },

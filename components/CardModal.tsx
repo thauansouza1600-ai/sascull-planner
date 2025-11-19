@@ -246,7 +246,8 @@ const CardModal: React.FC<CardModalProps> = ({ card, currentUser, isOpen, onClos
                                                 {att.type === 'image' ? (
                                                     <>
                                                         <img src={att.url} alt={att.name} className="w-full h-full object-cover" />
-                                                        <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">
+                                                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+                                                            <EyeIcon className="w-6 h-6 text-white drop-shadow-md" />
                                                         </div>
                                                     </>
                                                 ) : (
