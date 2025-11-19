@@ -1,0 +1,5 @@
+{
+  "name": "KanbanFlow IA",
+  "description": "Uma ferramenta de gerenciamento de projetos estilo Trello com quadros, listas, cartões arrastáveis e assistência de IA Gemini para quebra de tarefas e geração de conteúdo.",
+  "requestFramePermissions": []
+}
